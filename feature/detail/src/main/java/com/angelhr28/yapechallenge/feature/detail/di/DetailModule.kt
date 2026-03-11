@@ -9,6 +9,11 @@ import com.angelhr28.yapechallenge.feature.detail.DetailViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
+/**
+ * Modulo de inyeccion de dependencias Koin para la funcionalidad de detalle de documento.
+ *
+ * Provee los casos de uso y el ViewModel necesarios para la pantalla de detalle.
+ */
 val detailModule = module {
     factory { GetDocumentDetailUseCase(get()) }
     factory { GetDecryptedDocumentUseCase(get()) }

@@ -25,6 +25,14 @@ import com.angelhr28.yapechallenge.core.extensions.toFormattedDate
 import com.angelhr28.yapechallenge.domain.model.AccessAction
 import com.angelhr28.yapechallenge.domain.model.AccessLog
 
+/**
+ * Seccion que muestra el historial de accesos a un documento.
+ *
+ * Presenta una lista de registros con iconos diferenciados segun la accion (ver o eliminar).
+ *
+ * @param accessLogs Lista de registros de acceso a mostrar.
+ * @param modifier Modificador aplicado al contenedor.
+ */
 @Composable
 fun AccessLogSection(
     accessLogs: List<AccessLog>,
@@ -70,6 +78,12 @@ fun AccessLogSection(
     }
 }
 
+/**
+ * Elemento individual del historial de accesos.
+ *
+ * @param log Registro de acceso a mostrar.
+ * @param modifier Modificador aplicado a la fila.
+ */
 @Composable
 private fun AccessLogItem(
     log: AccessLog,

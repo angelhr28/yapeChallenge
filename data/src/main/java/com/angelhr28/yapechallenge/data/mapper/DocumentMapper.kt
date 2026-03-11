@@ -7,6 +7,7 @@ import com.angelhr28.yapechallenge.domain.model.AccessLog
 import com.angelhr28.yapechallenge.domain.model.Document
 import com.angelhr28.yapechallenge.domain.model.DocumentType
 
+/** Convierte una [DocumentEntity] al modelo de dominio [Document]. */
 fun DocumentEntity.toDomain(): Document {
     return Document(
         id = id,
@@ -21,6 +22,7 @@ fun DocumentEntity.toDomain(): Document {
     )
 }
 
+/** Convierte un modelo de dominio [Document] a [DocumentEntity]. */
 fun Document.toEntity(): DocumentEntity {
     return DocumentEntity(
         id = id,
@@ -35,6 +37,7 @@ fun Document.toEntity(): DocumentEntity {
     )
 }
 
+/** Convierte una [AccessLogEntity] al modelo de dominio [AccessLog]. */
 fun AccessLogEntity.toDomain(): AccessLog {
     return AccessLog(
         id = id,
@@ -45,6 +48,7 @@ fun AccessLogEntity.toDomain(): AccessLog {
     )
 }
 
+/** Convierte un modelo de dominio [AccessLog] a [AccessLogEntity]. */
 fun AccessLog.toEntity(): AccessLogEntity {
     return AccessLogEntity(
         id = id,

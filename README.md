@@ -139,7 +139,7 @@ DetailViewModel.LoadDocument(id)
         ├── GetDecryptedDocumentUseCase ──► Descifra bytes en memoria
         ├── LogAccessUseCase(VIEW) ──► Registra acceso con ubicación
         ├── FLAG_SECURE activado ──► Previene screenshots
-        └── FusedLocationProvider ──► Obtiene ubicación para watermark
+        └── FusedLocationProvider ──► Obtiene ubicación para watermark (Geocoder async API 33+)
                 │
                 ▼
         Imagen descifrada + Watermark + Zoom habilitado
@@ -240,7 +240,8 @@ Guardar en filesDir/secure_docs/      ByteArray en memoria
 - Canvas composable con texto repetitivo rotado 30°
 - Semi-transparente para no obstruir el contenido
 - Ubicación obtenida directamente en `DetailScreen` via `FusedLocationProviderClient`
-- Geocoding reverso con `Geocoder` para obtener nombre de calle (`thoroughfare` + `subThoroughfare`)
+- Geocoding reverso con `Geocoder`: API asíncrona con callback en Android 13+ (API 33), síncrona con `@Suppress("DEPRECATION")` en versiones anteriores
+- Dirección formateada con `thoroughfare`, `subThoroughfare`, `locality` y `adminArea`
 - Fallback a coordenadas GPS si el geocoding no está disponible
 
 ### Almacenamiento
@@ -289,22 +290,23 @@ Guardar en filesDir/secure_docs/      ByteArray en memoria
 
 | Tecnología | Versión | Uso |
 |-----------|---------|-----|
-| Kotlin | 2.0.21 | Lenguaje principal |
-| Jetpack Compose | BOM 2024.09.00 | UI declarativa |
+| Kotlin | 2.3.10 | Lenguaje principal |
+| Jetpack Compose | BOM 2026.02.01 | UI declarativa |
 | Material 3 | Latest | Design system (Material You) |
-| AGP | 9.0.1 | Build system |
-| Gradle | 9.2.1 | Gestión de dependencias |
+| AGP | 9.1.0 | Build system |
+| Gradle | 9.3.1 | Gestión de dependencias |
 | compileSdk | 36 | API target |
 | minSdk | 24 | Android 7.0+ |
 
 ### Novedades de Plataforma
 
-- **AGP 9.x** con compileSdk minor API levels
-- **Kotlin 2.0+** con Compose Compiler plugin integrado
-- **Navigation Compose** type-safe routes con Kotlin Serialization
+- **AGP 9.1** con compileSdk 36
+- **Kotlin 2.3+** con Compose Compiler plugin integrado
+- **Navigation Compose 2.9.7** type-safe routes con Kotlin Serialization
 - **Material 3** dynamic color (Material You)
-- **CameraX** con ProcessCameraProvider lifecycle binding
+- **CameraX 1.5.3** con ProcessCameraProvider lifecycle binding
 - **Edge-to-edge** display con `enableEdgeToEdge()`
+- **Geocoder async API** con callback para Android 13+ (TIRAMISU), fallback síncrono para versiones anteriores
 
 ---
 
@@ -312,16 +314,16 @@ Guardar en filesDir/secure_docs/      ByteArray en memoria
 
 | Librería | Versión | Uso | Justificación |
 |----------|---------|-----|---------------|
-| **Koin** | 4.0.4 | Inyección de dependencias | Ligero, sin code generation, DSL legible, ideal para multi-módulo |
-| **Room** | 2.7.1 | Base de datos local | ORM oficial, queries type-safe, soporte nativo de Flow |
-| **Navigation Compose** | 2.9.0 | Navegación | Rutas tipadas con Kotlin Serialization, compile-time safety |
-| **CameraX** | 1.5.0 | Captura de fotos | API moderna, lifecycle-aware, reemplaza Camera2 |
-| **Coil** | 3.1.0 | Carga de imágenes | Nativo Kotlin, soporte Compose, ligero |
-| **Biometric** | 1.4.0-alpha02 | Autenticación biométrica | API oficial AndroidX |
-| **Security Crypto** | 1.0.0 | Encrypted SharedPreferences | Cifrado seguro de preferencias |
+| **Koin** | 4.1.1 | Inyección de dependencias | Ligero, sin code generation, DSL legible, ideal para multi-módulo |
+| **Room** | 2.8.4 | Base de datos local | ORM oficial, queries type-safe, soporte nativo de Flow |
+| **Navigation Compose** | 2.9.7 | Navegación | Rutas tipadas con Kotlin Serialization, compile-time safety |
+| **CameraX** | 1.5.3 | Captura de fotos | API moderna, lifecycle-aware, reemplaza Camera2 |
+| **Coil** | 3.4.0 | Carga de imágenes | Nativo Kotlin, soporte Compose, ligero |
+| **Biometric** | 1.4.0-alpha05 | Autenticación biométrica | API oficial AndroidX |
+| **Security Crypto** | 1.1.0 | Android Keystore | Cifrado AES-256-GCM con clave en hardware seguro |
 | **Play Services Location** | 21.3.0 | Geolocalización | FusedLocationProvider + Geocoder |
-| **Coroutines** | 1.10.1 | Asincronía | Flow reactivo, structured concurrency |
-| **KSP** | 2.0.21-1.0.28 | Procesamiento de anotaciones | Code generation para Room |
+| **Coroutines** | 1.10.2 | Asincronía | Flow reactivo, structured concurrency |
+| **KSP** | 2.3.6 | Procesamiento de anotaciones | Code generation para Room |
 
 ---
 

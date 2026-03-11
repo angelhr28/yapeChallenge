@@ -16,6 +16,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+/**
+ * Componente que muestra un estado vacio con icono, titulo y subtitulo.
+ *
+ * @param icon icono representativo del estado vacio.
+ * @param title titulo descriptivo.
+ * @param subtitle mensaje secundario con mas detalle.
+ * @param modifier modificador de Compose.
+ */
 @Composable
 fun EmptyState(
     icon: ImageVector,

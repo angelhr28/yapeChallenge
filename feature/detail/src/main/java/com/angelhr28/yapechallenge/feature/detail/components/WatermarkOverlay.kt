@@ -12,6 +12,13 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
 
+/**
+ * Superposicion de marca de agua con texto rotado y repetido sobre un Canvas.
+ *
+ * @param locationText Texto de ubicacion que se incluye en la marca de agua.
+ * @param modifier Modificador aplicado al Canvas.
+ * @param color Color del texto de la marca de agua.
+ */
 @Composable
 fun WatermarkOverlay(
     locationText: String,

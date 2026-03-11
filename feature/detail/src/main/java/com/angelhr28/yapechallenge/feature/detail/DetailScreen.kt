@@ -1,9 +1,11 @@
 package com.angelhr28.yapechallenge.feature.detail
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.location.Geocoder
+import android.os.Build
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -55,6 +57,18 @@ import com.google.android.gms.location.LocationServices
 import org.koin.compose.viewmodel.koinViewModel
 import java.util.Locale
 
+/**
+ * Pantalla de detalle de documento.
+ *
+ * Muestra el contenido del documento (imagen o PDF) con marca de agua de geolocalizacion,
+ * proteccion contra capturas de pantalla, autenticacion biometrica obligatoria,
+ * historial de accesos y opcion de eliminacion con confirmacion biometrica.
+ *
+ * @param documentId Identificador del documento a visualizar.
+ * @param onNavigateBack Callback para navegar hacia atras.
+ * @param viewModel ViewModel que gestiona el estado de la pantalla.
+ */
+@SuppressLint("MissingPermission")
 @Composable
 fun DetailScreen(
     documentId: Long,
@@ -92,11 +106,13 @@ fun DetailScreen(
                 val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
-                        try {
-                            @Suppress("DEPRECATION")
-                            val addresses = Geocoder(context, Locale("es", "PE"))
-                                .getFromLocation(location.latitude, location.longitude, 1)
-                            val locationText = if (!addresses.isNullOrEmpty()) {
+                        @Suppress("DEPRECATION")
+                        val locale = Locale("es", "PE")
+                        val geocoder = Geocoder(context, locale)
+                        val fallbackText = "${location.latitude}, ${location.longitude}"
+
+                        fun buildLocationText(addresses: List<android.location.Address>): String {
+                            return if (addresses.isNotEmpty()) {
                                 val address = addresses[0]
                                 buildString {
                                     address.thoroughfare?.let { append(it) }
@@ -109,16 +125,32 @@ fun DetailScreen(
                                         if (isNotEmpty()) append(", ")
                                         append(it)
                                     }
-                                }.ifEmpty { "${location.latitude}, ${location.longitude}" }
+                                }.ifEmpty { fallbackText }
                             } else {
-                                "${location.latitude}, ${location.longitude}"
+                                fallbackText
                             }
-                            viewModel.processIntent(DetailIntent.UpdateLocation(locationText))
+                        }
+
+                        try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                geocoder.getFromLocation(
+                                    location.latitude,
+                                    location.longitude,
+                                    1
+                                ) { addresses ->
+                                    val locationText = buildLocationText(addresses)
+                                    viewModel.processIntent(DetailIntent.UpdateLocation(locationText))
+                                }
+                            } else {
+                                @Suppress("DEPRECATION")
+                                val addresses = geocoder
+                                    .getFromLocation(location.latitude, location.longitude, 1)
+                                val locationText = buildLocationText(addresses.orEmpty())
+                                viewModel.processIntent(DetailIntent.UpdateLocation(locationText))
+                            }
                         } catch (_: Exception) {
                             viewModel.processIntent(
-                                DetailIntent.UpdateLocation(
-                                    "${location.latitude}, ${location.longitude}"
-                                )
+                                DetailIntent.UpdateLocation(fallbackText)
                             )
                         }
                     }
@@ -145,7 +177,7 @@ fun DetailScreen(
                                 onSuccess = {
                                     viewModel.processIntent(DetailIntent.OnAuthenticated)
                                 },
-                                onError = { error ->
+                                onError = { _ ->
                                     onNavigateBack()
                                 }
                             )

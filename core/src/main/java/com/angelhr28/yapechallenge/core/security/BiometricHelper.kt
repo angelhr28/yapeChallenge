@@ -5,8 +5,17 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
+/**
+ * Clase utilitaria para gestionar la autenticacion biometrica del dispositivo.
+ */
 class BiometricHelper {
 
+    /**
+     * Verifica si el dispositivo soporta autenticacion biometrica.
+     *
+     * @param activity la actividad desde la cual se consulta.
+     * @return `true` si la autenticacion biometrica esta disponible.
+     */
     fun canAuthenticate(activity: FragmentActivity): Boolean {
         val biometricManager = BiometricManager.from(activity)
         return biometricManager.canAuthenticate(
@@ -15,6 +24,16 @@ class BiometricHelper {
         ) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
+    /**
+     * Inicia el flujo de autenticacion biometrica.
+     *
+     * @param activity la actividad host del prompt biometrico.
+     * @param title titulo del dialogo biometrico.
+     * @param subtitle subtitulo del dialogo biometrico.
+     * @param negativeButtonText texto del boton de cancelar.
+     * @param onSuccess callback invocado tras autenticacion exitosa.
+     * @param onError callback invocado con el mensaje de error.
+     */
     fun authenticate(
         activity: FragmentActivity,
         title: String = "Autenticación requerida",

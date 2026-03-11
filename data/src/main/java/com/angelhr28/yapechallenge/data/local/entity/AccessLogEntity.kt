@@ -5,6 +5,18 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entidad de Room que registra los accesos realizados a un documento.
+ *
+ * Tiene una relacion de clave foranea con [DocumentEntity]; al eliminar
+ * un documento se eliminan sus registros de acceso en cascada.
+ *
+ * @property id Identificador unico autogenerado.
+ * @property documentId Identificador del documento asociado.
+ * @property accessedAt Marca de tiempo del acceso en milisegundos.
+ * @property action Accion realizada sobre el documento.
+ * @property location Ubicacion opcional desde donde se accedio.
+ */
 @Entity(
     tableName = "access_logs",
     foreignKeys = [

@@ -25,6 +25,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import java.io.File
 
+/**
+ * Visor de documentos PDF que renderiza cada pagina como bitmap.
+ *
+ * Utiliza [PdfRenderer] para convertir los bytes del PDF en imagenes visualizables
+ * dentro de un contenedor con zoom.
+ *
+ * @param pdfBytes Bytes del archivo PDF a renderizar.
+ * @param modifier Modificador aplicado al componente.
+ */
 @Composable
 fun PdfViewer(
     pdfBytes: ByteArray,
@@ -69,6 +78,13 @@ fun PdfViewer(
     }
 }
 
+/**
+ * Renderiza todas las paginas de un PDF como una lista de [Bitmap].
+ *
+ * @param cacheDir Directorio de cache donde se almacena el archivo temporal.
+ * @param pdfBytes Bytes del archivo PDF.
+ * @return Lista de bitmaps, uno por pagina del PDF.
+ */
 private fun renderPdfPages(cacheDir: File, pdfBytes: ByteArray): List<Bitmap> {
     val bitmaps = mutableListOf<Bitmap>()
     var tempFile: File? = null

@@ -12,12 +12,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Modelo de datos que representa una opcion de filtro.
+ *
+ * @property label texto visible del filtro.
+ * @property key identificador unico del filtro.
+ * @property isSelected indica si el filtro esta seleccionado.
+ */
 data class FilterOption(
     val label: String,
     val key: String,
     val isSelected: Boolean
 )
 
+/**
+ * Fila horizontal desplazable de chips de filtro.
+ *
+ * @param filters lista de opciones de filtro a mostrar.
+ * @param onFilterSelected callback invocado con la clave del filtro seleccionado.
+ * @param modifier modificador de Compose.
+ */
 @Composable
 fun FilterChipRow(
     filters: List<FilterOption>,

@@ -15,6 +15,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 
+/**
+ * Contenedor que permite hacer zoom y desplazamiento mediante gestos de pellizco y arrastre.
+ *
+ * @param modifier Modificador aplicado al contenedor.
+ * @param minScale Escala minima permitida.
+ * @param maxScale Escala maxima permitida.
+ * @param content Contenido composable que sera ampliable.
+ */
 @Composable
 fun ZoomableImage(
     modifier: Modifier = Modifier,

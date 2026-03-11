@@ -9,6 +9,10 @@ import com.angelhr28.yapechallenge.domain.repository.DocumentRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
+/**
+ * Modulo de Koin que provee las dependencias de la capa de datos:
+ * base de datos, DAOs, gestor de archivos cifrados y repositorio.
+ */
 val dataModule = module {
     single { CryptoManager() }
 

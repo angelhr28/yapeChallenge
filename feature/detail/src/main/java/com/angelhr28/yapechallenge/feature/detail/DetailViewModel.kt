@@ -9,6 +9,11 @@ import com.angelhr28.yapechallenge.domain.usecase.GetDocumentDetailUseCase
 import com.angelhr28.yapechallenge.domain.usecase.LogAccessUseCase
 import kotlinx.coroutines.flow.collectLatest
 
+/**
+ * ViewModel de la pantalla de detalle de documento.
+ *
+ * Gestiona la carga, desencriptacion, registro de accesos y eliminacion de documentos.
+ */
 class DetailViewModel(
     private val getDocumentDetailUseCase: GetDocumentDetailUseCase,
     private val getDecryptedDocumentUseCase: GetDecryptedDocumentUseCase,
@@ -27,6 +32,7 @@ class DetailViewModel(
         }
     }
 
+    /** Carga el documento y solicita autenticacion biometrica. */
     private suspend fun loadDocument(documentId: Long) {
         setState { copy(isLoading = true, error = null) }
         try {
@@ -47,6 +53,7 @@ class DetailViewModel(
         }
     }
 
+    /** Desencripta el documento y registra el acceso tras autenticacion exitosa. */
     private suspend fun onAuthenticated() {
         setState { copy(isAuthenticated = true) }
         val document = currentState.document ?: return
@@ -59,6 +66,7 @@ class DetailViewModel(
         }
     }
 
+    /** Registra el acceso de eliminacion y elimina el documento. */
     private suspend fun deleteDocument() {
         val document = currentState.document ?: return
         try {

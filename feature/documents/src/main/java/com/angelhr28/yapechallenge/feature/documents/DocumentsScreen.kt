@@ -67,6 +67,16 @@ import com.angelhr28.yapechallenge.domain.model.Document
 import com.angelhr28.yapechallenge.domain.model.DocumentType
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Pantalla principal de listado de documentos.
+ *
+ * Muestra los documentos almacenados con filtros por tipo, permite agregar documentos
+ * desde la galeria o camara, y navega al detalle al seleccionar un documento.
+ *
+ * @param onNavigateToDetail Callback invocado con el ID del documento para navegar al detalle.
+ * @param onTakePhoto Callback para abrir la camara y capturar una foto.
+ * @param viewModel ViewModel que gestiona el estado de la pantalla.
+ */
 @Composable
 fun DocumentsScreen(
     onNavigateToDetail: (Long) -> Unit,
@@ -231,6 +241,13 @@ fun DocumentsScreen(
     }
 }
 
+/**
+ * Elemento de la lista que representa un documento con su icono, nombre, tipo, peso y fecha.
+ *
+ * @param document Documento a mostrar.
+ * @param onClick Callback al presionar el elemento.
+ * @param modifier Modificador aplicado a la tarjeta.
+ */
 @Composable
 private fun DocumentItem(
     document: Document,
@@ -328,6 +345,7 @@ private fun DocumentItem(
     }
 }
 
+/** Formatea el tamano de archivo en bytes a una representacion legible (B, KB, MB). */
 private fun formatFileSize(bytes: Long): String {
     return when {
         bytes < 1024 -> "$bytes B"

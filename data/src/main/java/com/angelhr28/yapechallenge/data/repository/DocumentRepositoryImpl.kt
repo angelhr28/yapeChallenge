@@ -14,28 +14,43 @@ import com.angelhr28.yapechallenge.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Implementacion de [DocumentRepository] que coordina el almacenamiento
+ * cifrado de archivos con la persistencia en base de datos local.
+ *
+ * @property documentDao DAO para operaciones sobre documentos.
+ * @property accessLogDao DAO para registros de acceso.
+ * @property encryptedFileManager Gestor de archivos cifrados.
+ */
 class DocumentRepositoryImpl(
     private val documentDao: DocumentDao,
     private val accessLogDao: AccessLogDao,
     private val encryptedFileManager: EncryptedFileManager
 ) : DocumentRepository {
 
+    /** {@inheritDoc} */
     override fun getAllDocuments(): Flow<List<Document>> {
         return documentDao.getAllDocuments().map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
+    /** {@inheritDoc} */
     override fun getDocumentsByType(type: DocumentType): Flow<List<Document>> {
         return documentDao.getDocumentsByType(type.name).map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
+    /** {@inheritDoc} */
     override suspend fun getDocumentById(id: Long): Document? {
         return documentDao.getDocumentById(id)?.toDomain()
     }
 
+    /**
+     * Cifra el archivo, lo almacena y persiste los metadatos en la base de datos.
+     * {@inheritDoc}
+     */
     override suspend fun addDocument(
         name: String,
         mimeType: String,
@@ -65,6 +80,10 @@ class DocumentRepositoryImpl(
         return entity.copy(id = id).toDomain()
     }
 
+    /**
+     * Elimina el archivo cifrado, su miniatura y el registro en base de datos.
+     * {@inheritDoc}
+     */
     override suspend fun deleteDocument(id: Long) {
         val document = documentDao.getDocumentById(id)
         if (document != null) {
@@ -74,16 +93,19 @@ class DocumentRepositoryImpl(
         }
     }
 
+    /** {@inheritDoc} */
     override suspend fun getDecryptedBytes(document: Document): ByteArray {
         return encryptedFileManager.readDecryptedFile(document.encryptedPath)
     }
 
+    /** {@inheritDoc} */
     override fun getAccessLogs(documentId: Long): Flow<List<AccessLog>> {
         return accessLogDao.getAccessLogs(documentId).map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
+    /** {@inheritDoc} */
     override suspend fun logAccess(documentId: Long, action: AccessAction, location: String?) {
         val entity = AccessLogEntity(
             documentId = documentId,

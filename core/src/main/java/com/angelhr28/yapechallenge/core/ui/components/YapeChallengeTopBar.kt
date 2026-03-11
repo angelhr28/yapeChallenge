@@ -11,6 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 
+/**
+ * Barra superior personalizada con titulo centrado y soporte para icono de navegacion.
+ *
+ * @param title texto del titulo.
+ * @param modifier modificador de Compose.
+ * @param navigationIcon icono de navegacion opcional.
+ * @param onNavigationClick callback al presionar el icono de navegacion.
+ * @param actions contenido composable para acciones adicionales.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YapeChallengeTopBar(

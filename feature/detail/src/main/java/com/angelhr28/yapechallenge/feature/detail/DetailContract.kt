@@ -6,6 +6,17 @@ import com.angelhr28.yapechallenge.core.mvi.UiState
 import com.angelhr28.yapechallenge.domain.model.AccessLog
 import com.angelhr28.yapechallenge.domain.model.Document
 
+/**
+ * Estado de la pantalla de detalle de documento.
+ *
+ * @property document Documento cargado actualmente.
+ * @property decryptedBytes Bytes desencriptados del documento para su visualizacion.
+ * @property accessLogs Historial de accesos al documento.
+ * @property isLoading Indica si se esta cargando informacion.
+ * @property isAuthenticated Indica si el usuario se autentico biometricamente.
+ * @property currentLocation Ubicacion actual del usuario para la marca de agua.
+ * @property error Mensaje de error, si existe.
+ */
 data class DetailState(
     val document: Document? = null,
     val decryptedBytes: ByteArray? = null,
@@ -38,28 +49,42 @@ data class DetailState(
     }
 }
 
+/** Compara dos [ByteArray] anulables por contenido. */
 private fun ByteArray?.contentEquals(other: ByteArray?): Boolean {
     if (this === other) return true
     if (this == null || other == null) return false
     return this.contentEquals(other)
 }
 
+/** Calcula el hash de un [ByteArray] anulable. */
 private fun ByteArray?.contentHashCode(): Int {
     return this?.contentHashCode() ?: 0
 }
 
+/** Intenciones del usuario en la pantalla de detalle. */
 sealed interface DetailIntent : UiIntent {
+    /** Solicita cargar un documento por su [documentId]. */
     data class LoadDocument(val documentId: Long) : DetailIntent
+    /** El usuario se autentico exitosamente. */
     data object OnAuthenticated : DetailIntent
+    /** El usuario solicita eliminar el documento. */
     data object RequestDelete : DetailIntent
+    /** Confirmacion de eliminacion tras autenticacion biometrica. */
     data object ConfirmDelete : DetailIntent
+    /** Actualiza la ubicacion actual del usuario. */
     data class UpdateLocation(val location: String) : DetailIntent
 }
 
+/** Efectos secundarios emitidos desde la pantalla de detalle. */
 sealed interface DetailEffect : UiEffect {
+    /** Solicita autenticacion biometrica para ver el documento. */
     data object RequestBiometricAuth : DetailEffect
+    /** Solicita autenticacion biometrica para eliminar el documento. */
     data object RequestDeleteBiometricAuth : DetailEffect
+    /** Navega hacia atras. */
     data object NavigateBack : DetailEffect
+    /** Muestra un mensaje de error. */
     data class ShowError(val message: String) : DetailEffect
+    /** Muestra un mensaje de exito. */
     data class ShowSuccess(val message: String) : DetailEffect
 }

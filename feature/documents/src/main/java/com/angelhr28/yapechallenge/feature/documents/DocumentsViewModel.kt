@@ -5,6 +5,11 @@ import com.angelhr28.yapechallenge.domain.usecase.AddDocumentUseCase
 import com.angelhr28.yapechallenge.domain.usecase.GetDocumentsUseCase
 import kotlinx.coroutines.flow.collectLatest
 
+/**
+ * ViewModel de la pantalla de listado de documentos.
+ *
+ * Gestiona la carga, filtrado y adicion de documentos.
+ */
 class DocumentsViewModel(
     private val getDocumentsUseCase: GetDocumentsUseCase,
     private val addDocumentUseCase: AddDocumentUseCase
@@ -23,6 +28,7 @@ class DocumentsViewModel(
         }
     }
 
+    /** Carga los documentos aplicando el filtro actual. */
     private suspend fun loadDocuments() {
         setState { copy(isLoading = true, error = null) }
         try {
@@ -35,6 +41,7 @@ class DocumentsViewModel(
         }
     }
 
+    /** Filtra los documentos por el tipo indicado y recarga la lista. */
     private suspend fun filterDocuments(type: com.angelhr28.yapechallenge.domain.model.DocumentType?) {
         setState { copy(selectedFilter = type, isLoading = true) }
         try {
@@ -46,6 +53,7 @@ class DocumentsViewModel(
         }
     }
 
+    /** Agrega un nuevo documento y recarga la lista tras el exito. */
     private suspend fun addDocument(name: String, mimeType: String, bytes: ByteArray) {
         setState { copy(isLoading = true) }
         try {

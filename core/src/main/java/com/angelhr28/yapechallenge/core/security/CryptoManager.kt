@@ -10,6 +10,9 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
+/**
+ * Gestor de cifrado que utiliza AES-256-GCM a traves del Android KeyStore.
+ */
 class CryptoManager {
 
     companion object {
@@ -47,6 +50,12 @@ class CryptoManager {
         return keyGenerator.generateKey()
     }
 
+    /**
+     * Cifra datos de un flujo de entrada y escribe el resultado en el flujo de salida.
+     *
+     * @param inputStream flujo con los datos en texto plano.
+     * @param outputStream flujo donde se escriben los datos cifrados.
+     */
     fun encrypt(inputStream: InputStream, outputStream: OutputStream) {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getOrCreateKey())
@@ -70,6 +79,12 @@ class CryptoManager {
         outputStream.flush()
     }
 
+    /**
+     * Descifra datos de un flujo de entrada y escribe el resultado en el flujo de salida.
+     *
+     * @param inputStream flujo con los datos cifrados.
+     * @param outputStream flujo donde se escriben los datos descifrados.
+     */
     fun decrypt(inputStream: InputStream, outputStream: OutputStream) {
         val ivSize = inputStream.read()
         val iv = ByteArray(ivSize)
@@ -85,6 +100,12 @@ class CryptoManager {
         outputStream.flush()
     }
 
+    /**
+     * Cifra un arreglo de bytes y retorna el resultado incluyendo el IV.
+     *
+     * @param data datos en texto plano a cifrar.
+     * @return arreglo de bytes con IV + datos cifrados.
+     */
     fun encryptBytes(data: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getOrCreateKey())
@@ -99,6 +120,12 @@ class CryptoManager {
         }
     }
 
+    /**
+     * Descifra un arreglo de bytes previamente cifrado con [encryptBytes].
+     *
+     * @param data datos cifrados que incluyen el IV.
+     * @return arreglo de bytes descifrados.
+     */
     fun decryptBytes(data: ByteArray): ByteArray {
         val ivSize = data[0].toInt()
         val iv = data.copyOfRange(1, 1 + ivSize)
