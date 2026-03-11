@@ -1,0 +1,101 @@
+# Built application files
+*.apk
+*.aab
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle files
+.gradle/
+build/
+**/build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio
+*.iml
+.idea/workspace.xml
+.idea/libraries/
+.idea/modules.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/caches/
+.idea/dictionaries/
+.idea/shelf/
+.idea/.name
+.idea/modules/
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/gradle.xml
+.idea/vcs.xml
+.idea/copyright/
+.idea/encodings.xml
+.idea/misc.xml
+.idea/deploymentTargetSelector.xml
+.idea/kotlinc.xml
+.idea/appInsightsSettings.xml
+.idea/other.xml
+.idea/render.experimental.xml
+.idea/inspectionProfiles/
+
+# Captures (Android Studio memory profiler)
+/captures
+
+# Keystore files (security)
+*.jks
+*.keystore
+keystore.properties
+
+# External native build
+.externalNativeBuild/
+.cxx/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.nfs*
+
+# Log files
+*.log
+
+# Crash reports
+crash-reports/
+
+# Env / secrets
+.env
+*.env
+secrets/
+
+# Proguard
+proguard-mapping/
+
+# Google Services (contains API keys)
+google-services.json
+
+# Node (if using any JS tooling)
+node_modules/
+
+# Coverage reports
+coverage/
+*.exec
