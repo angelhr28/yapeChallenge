@@ -39,6 +39,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -48,6 +49,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,10 +63,11 @@ import com.angelhr28.yapechallenge.core.ui.components.YapeChallengeTopBar
 import com.angelhr28.yapechallenge.core.ui.components.EmptyState
 import com.angelhr28.yapechallenge.core.ui.components.FilterChipRow
 import com.angelhr28.yapechallenge.core.ui.components.FilterOption
-import com.angelhr28.yapechallenge.core.ui.theme.ImageColor
-import com.angelhr28.yapechallenge.core.ui.theme.PdfColor
+import com.angelhr28.yapechallenge.core.ui.theme.YapeChallengeTheme
 import com.angelhr28.yapechallenge.domain.model.Document
 import com.angelhr28.yapechallenge.domain.model.DocumentType
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -108,12 +111,26 @@ fun DocumentsScreen(
         }
     }
 
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is DocumentsEffect.NavigateToDetail -> onNavigateToDetail(effect.documentId)
-                is DocumentsEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
-                is DocumentsEffect.ShowSuccess -> snackbarHostState.showSnackbar(effect.message)
+                is DocumentsEffect.ShowError -> {
+                    scope.launch {
+                        val job = launch { snackbarHostState.showSnackbar(effect.message, duration = SnackbarDuration.Indefinite) }
+                        delay(2000)
+                        job.cancel()
+                    }
+                }
+                is DocumentsEffect.ShowSuccess -> {
+                    scope.launch {
+                        val job = launch { snackbarHostState.showSnackbar(effect.message, duration = SnackbarDuration.Indefinite) }
+                        delay(2000)
+                        job.cancel()
+                    }
+                }
             }
         }
     }
@@ -260,7 +277,7 @@ private fun DocumentItem(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
     ) {
         Row(
             modifier = Modifier
@@ -274,8 +291,8 @@ private fun DocumentItem(
                     .clip(RoundedCornerShape(8.dp))
                     .background(
                         when (document.type) {
-                            DocumentType.PDF -> PdfColor.copy(alpha = 0.1f)
-                            DocumentType.IMAGE -> ImageColor.copy(alpha = 0.1f)
+                            DocumentType.PDF -> YapeChallengeTheme.extendedColors.pdfColor.copy(alpha = 0.1f)
+                            DocumentType.IMAGE -> YapeChallengeTheme.extendedColors.imageColor.copy(alpha = 0.1f)
                         }
                     ),
                 contentAlignment = Alignment.Center
@@ -287,8 +304,8 @@ private fun DocumentItem(
                     },
                     contentDescription = document.type.displayName,
                     tint = when (document.type) {
-                        DocumentType.PDF -> PdfColor
-                        DocumentType.IMAGE -> ImageColor
+                        DocumentType.PDF -> YapeChallengeTheme.extendedColors.pdfColor
+                        DocumentType.IMAGE -> YapeChallengeTheme.extendedColors.imageColor
                     },
                     modifier = Modifier.size(24.dp)
                 )
@@ -310,27 +327,27 @@ private fun DocumentItem(
                     Text(
                         text = document.type.displayName,
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = "•",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                        color = MaterialTheme.colorScheme.outline
                     )
                     Text(
                         text = formatFileSize(document.fileSize),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = "•",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                        color = MaterialTheme.colorScheme.outline
                     )
                     Text(
                         text = document.createdAt.toShortDate(),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -338,7 +355,7 @@ private fun DocumentItem(
             Icon(
                 imageVector = Icons.Default.Description,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(20.dp)
             )
         }

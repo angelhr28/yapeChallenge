@@ -76,7 +76,7 @@ Eventos one-shot: sendEffect() ──► Effect (Channel) ──► Navegación,
 
 | Módulo | Responsabilidad |
 |--------|----------------|
-| `:app` | Entry point, `MainActivity`, navegación, tema, configuración de Koin |
+| `:app` | Entry point, `MainActivity` (extiende `FragmentActivity`), navegación, tema, configuración de Koin |
 | `:core` | `MviViewModel` base, `CryptoManager`, `BiometricHelper`, componentes UI compartidos |
 | `:domain` | Modelos (`Document`, `AccessLog`), interfaces de repositorio, use cases. **Sin dependencias Android** |
 | `:data` | Room DB, `EncryptedFileManager`, implementación de repositorio, mappers entidad ↔ dominio |
@@ -227,6 +227,7 @@ Guardar en filesDir/secure_docs/      ByteArray en memoria
 
 - `BiometricPrompt` con `BIOMETRIC_STRONG | BIOMETRIC_WEAK`
 - Requerida para: **visualizar** y **eliminar** documentos
+- `MainActivity` extiende `FragmentActivity` (requerido por `BiometricPrompt`)
 - Fallo → retorno automático a pantalla anterior
 
 ### Prevención de Screenshots

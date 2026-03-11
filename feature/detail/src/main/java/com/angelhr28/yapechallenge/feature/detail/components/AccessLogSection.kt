@@ -61,7 +61,7 @@ fun AccessLogSection(
             Text(
                 text = "Sin accesos registrados",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         } else {
@@ -70,7 +70,7 @@ fun AccessLogSection(
                 if (index < accessLogs.lastIndex) {
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        color = MaterialTheme.colorScheme.outlineVariant
                     )
                 }
             }
@@ -117,14 +117,14 @@ private fun AccessLogItem(
             Text(
                 text = log.accessedAt.toFormattedDate(),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             val location = log.location
             if (location != null) {
                 Text(
                     text = location,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.outline
                 )
             }
         }

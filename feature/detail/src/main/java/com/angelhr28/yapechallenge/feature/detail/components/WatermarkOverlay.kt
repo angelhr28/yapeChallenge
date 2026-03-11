@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
+import com.angelhr28.yapechallenge.core.ui.theme.YapeChallengeTheme
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -23,7 +24,7 @@ import androidx.compose.ui.unit.sp
 fun WatermarkOverlay(
     locationText: String,
     modifier: Modifier = Modifier,
-    color: Color = Color.White.copy(alpha = 0.3f)
+    color: Color = YapeChallengeTheme.extendedColors.watermark
 ) {
     val textMeasurer = rememberTextMeasurer()
     val watermarkText = "YapeChallenge | $locationText"

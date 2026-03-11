@@ -30,7 +30,7 @@ data class DetailState(
         if (this === other) return true
         if (other !is DetailState) return false
         return document == other.document &&
-                decryptedBytes.contentEquals(other.decryptedBytes) &&
+                decryptedBytes.nullSafeContentEquals(other.decryptedBytes) &&
                 accessLogs == other.accessLogs &&
                 isLoading == other.isLoading &&
                 isAuthenticated == other.isAuthenticated &&
@@ -49,16 +49,10 @@ data class DetailState(
     }
 }
 
-/** Compara dos [ByteArray] anulables por contenido. */
-private fun ByteArray?.contentEquals(other: ByteArray?): Boolean {
+private fun ByteArray?.nullSafeContentEquals(other: ByteArray?): Boolean {
     if (this === other) return true
     if (this == null || other == null) return false
     return this.contentEquals(other)
-}
-
-/** Calcula el hash de un [ByteArray] anulable. */
-private fun ByteArray?.contentHashCode(): Int {
-    return this?.contentHashCode() ?: 0
 }
 
 /** Intenciones del usuario en la pantalla de detalle. */

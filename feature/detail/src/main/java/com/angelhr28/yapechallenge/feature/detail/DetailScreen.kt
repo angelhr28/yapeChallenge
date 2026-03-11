@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -38,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +56,8 @@ import com.angelhr28.yapechallenge.feature.detail.components.PdfViewer
 import com.angelhr28.yapechallenge.feature.detail.components.WatermarkOverlay
 import com.angelhr28.yapechallenge.feature.detail.components.ZoomableImage
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import java.util.Locale
 
@@ -163,6 +167,8 @@ fun DetailScreen(
         viewModel.processIntent(DetailIntent.LoadDocument(documentId))
     }
 
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -195,8 +201,20 @@ fun DetailScreen(
                     }
                 }
                 is DetailEffect.NavigateBack -> onNavigateBack()
-                is DetailEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
-                is DetailEffect.ShowSuccess -> snackbarHostState.showSnackbar(effect.message)
+                is DetailEffect.ShowError -> {
+                    scope.launch {
+                        val job = launch { snackbarHostState.showSnackbar(effect.message, duration = SnackbarDuration.Indefinite) }
+                        delay(2000)
+                        job.cancel()
+                    }
+                }
+                is DetailEffect.ShowSuccess -> {
+                    scope.launch {
+                        val job = launch { snackbarHostState.showSnackbar(effect.message, duration = SnackbarDuration.Indefinite) }
+                        delay(2000)
+                        job.cancel()
+                    }
+                }
             }
         }
     }
@@ -260,7 +278,7 @@ fun DetailScreen(
                     Text(
                         text = "Autenticación requerida para ver este documento",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(32.dp)
@@ -325,7 +343,7 @@ fun DetailScreen(
                             Text(
                                 text = "Tipo: ${state.document?.type?.displayName}",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 

@@ -48,8 +48,8 @@ fun YapeChallengeTopBar(
             }
         },
         actions = { actions() },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface
         )
     )

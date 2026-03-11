@@ -40,19 +40,19 @@ fun EmptyState(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            tint = MaterialTheme.colorScheme.outline
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            color = MaterialTheme.colorScheme.outline,
             textAlign = TextAlign.Center
         )
     }
