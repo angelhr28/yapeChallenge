@@ -4,7 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +39,7 @@ import com.angelhr28.yapechallenge.navigation.YapeChallengeNavGraph
 import org.koin.compose.viewmodel.koinViewModel
 import java.io.File
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private var showCamera by mutableStateOf(false)
     private var imageCapture: ImageCapture? = null

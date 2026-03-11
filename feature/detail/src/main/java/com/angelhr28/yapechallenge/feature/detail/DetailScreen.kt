@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.os.Build
 import android.view.WindowManager
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,7 +78,7 @@ fun DetailScreen(
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    val activity = context as? ComponentActivity
+    val activity = context as? FragmentActivity
     val biometricHelper = remember { BiometricHelper() }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -167,37 +167,31 @@ fun DetailScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is DetailEffect.RequestBiometricAuth -> {
-                    if (activity != null) {
-                        val fragmentActivity = activity as? androidx.fragment.app.FragmentActivity
-                        if (fragmentActivity != null) {
-                            biometricHelper.authenticate(
-                                activity = fragmentActivity,
-                                title = "Verificación requerida",
-                                subtitle = "Autentícate para ver el documento",
-                                onSuccess = {
-                                    viewModel.processIntent(DetailIntent.OnAuthenticated)
-                                },
-                                onError = { _ ->
-                                    onNavigateBack()
-                                }
-                            )
-                        }
+                    activity?.let {
+                        biometricHelper.authenticate(
+                            activity = it,
+                            title = "Verificación requerida",
+                            subtitle = "Autentícate para ver el documento",
+                            onSuccess = {
+                                viewModel.processIntent(DetailIntent.OnAuthenticated)
+                            },
+                            onError = { _ ->
+                                onNavigateBack()
+                            }
+                        )
                     }
                 }
                 is DetailEffect.RequestDeleteBiometricAuth -> {
-                    if (activity != null) {
-                        val fragmentActivity = activity as? androidx.fragment.app.FragmentActivity
-                        if (fragmentActivity != null) {
-                            biometricHelper.authenticate(
-                                activity = fragmentActivity,
-                                title = "Confirmar eliminación",
-                                subtitle = "Autentícate para eliminar el documento",
-                                onSuccess = {
-                                    viewModel.processIntent(DetailIntent.ConfirmDelete)
-                                },
-                                onError = { }
-                            )
-                        }
+                    activity?.let {
+                        biometricHelper.authenticate(
+                            activity = it,
+                            title = "Confirmar eliminación",
+                            subtitle = "Autentícate para eliminar el documento",
+                            onSuccess = {
+                                viewModel.processIntent(DetailIntent.ConfirmDelete)
+                            },
+                            onError = { }
+                        )
                     }
                 }
                 is DetailEffect.NavigateBack -> onNavigateBack()
