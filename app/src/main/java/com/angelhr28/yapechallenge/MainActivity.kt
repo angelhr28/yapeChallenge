@@ -2,7 +2,6 @@ package com.angelhr28.yapechallenge
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -37,16 +36,13 @@ import com.angelhr28.yapechallenge.core.ui.theme.YapeChallengeTheme
 import com.angelhr28.yapechallenge.feature.documents.DocumentsIntent
 import com.angelhr28.yapechallenge.feature.documents.DocumentsViewModel
 import com.angelhr28.yapechallenge.navigation.YapeChallengeNavGraph
-import com.google.android.gms.location.LocationServices
 import org.koin.compose.viewmodel.koinViewModel
 import java.io.File
-import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
     private var showCamera by mutableStateOf(false)
     private var imageCapture: ImageCapture? = null
-    private var currentLocation by mutableStateOf<String?>(null)
 
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -171,38 +167,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun fetchLocation() {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        try {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    try {
-                        val geocoder = Geocoder(this, Locale("es", "PE"))
-                        @Suppress("DEPRECATION")
-                        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                        if (!addresses.isNullOrEmpty()) {
-                            val address = addresses[0]
-                            currentLocation = buildString {
-                                address.thoroughfare?.let { append(it) }
-                                address.subThoroughfare?.let { append(" $it") }
-                                address.locality?.let {
-                                    if (isNotEmpty()) append(", ")
-                                    append(it)
-                                }
-                                address.adminArea?.let {
-                                    if (isNotEmpty()) append(", ")
-                                    append(it)
-                                }
-                            }.ifEmpty { "${location.latitude}, ${location.longitude}" }
-                        } else {
-                            currentLocation = "${location.latitude}, ${location.longitude}"
-                        }
-                    } catch (e: Exception) {
-                        currentLocation = "${location.latitude}, ${location.longitude}"
-                    }
-                }
-            }
-        } catch (e: SecurityException) {
-            Log.e("YapeChallenge", "Location permission not granted", e)
-        }
+        // Location is now fetched directly in DetailScreen for watermark
+        // This method only validates permissions were granted
     }
 }

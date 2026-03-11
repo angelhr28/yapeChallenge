@@ -1,6 +1,9 @@
 package com.angelhr28.yapechallenge.feature.detail
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Geocoder
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -40,13 +43,17 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.angelhr28.yapechallenge.core.security.BiometricHelper
 import com.angelhr28.yapechallenge.core.ui.components.YapeChallengeTopBar
 import com.angelhr28.yapechallenge.domain.model.DocumentType
 import com.angelhr28.yapechallenge.feature.detail.components.AccessLogSection
+import com.angelhr28.yapechallenge.feature.detail.components.PdfViewer
 import com.angelhr28.yapechallenge.feature.detail.components.WatermarkOverlay
 import com.angelhr28.yapechallenge.feature.detail.components.ZoomableImage
+import com.google.android.gms.location.LocationServices
 import org.koin.compose.viewmodel.koinViewModel
+import java.util.Locale
 
 @Composable
 fun DetailScreen(
@@ -69,6 +76,54 @@ fun DetailScreen(
         )
         onDispose {
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
+    // Fetch geolocation for watermark
+    LaunchedEffect(Unit) {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasPermission) {
+            try {
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        try {
+                            @Suppress("DEPRECATION")
+                            val addresses = Geocoder(context, Locale("es", "PE"))
+                                .getFromLocation(location.latitude, location.longitude, 1)
+                            val locationText = if (!addresses.isNullOrEmpty()) {
+                                val address = addresses[0]
+                                buildString {
+                                    address.thoroughfare?.let { append(it) }
+                                    address.subThoroughfare?.let { append(" $it") }
+                                    address.locality?.let {
+                                        if (isNotEmpty()) append(", ")
+                                        append(it)
+                                    }
+                                    address.adminArea?.let {
+                                        if (isNotEmpty()) append(", ")
+                                        append(it)
+                                    }
+                                }.ifEmpty { "${location.latitude}, ${location.longitude}" }
+                            } else {
+                                "${location.latitude}, ${location.longitude}"
+                            }
+                            viewModel.processIntent(DetailIntent.UpdateLocation(locationText))
+                        } catch (_: Exception) {
+                            viewModel.processIntent(
+                                DetailIntent.UpdateLocation(
+                                    "${location.latitude}, ${location.longitude}"
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (_: SecurityException) { }
         }
     }
 
@@ -216,14 +271,10 @@ fun DetailScreen(
                                     }
                                 }
                                 DocumentType.PDF -> {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = "Documento PDF\n${state.document?.name}",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                    state.decryptedBytes?.let { bytes ->
+                                        PdfViewer(
+                                            pdfBytes = bytes,
+                                            modifier = Modifier.fillMaxSize()
                                         )
                                     }
                                 }

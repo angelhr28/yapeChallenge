@@ -132,12 +132,16 @@ class DetailViewModelTest {
         coEvery { deleteDocumentUseCase(1L) } just runs
         coEvery { getDecryptedDocumentUseCase(testDocument) } returns ByteArray(10)
 
-        viewModel.processIntent(DetailIntent.LoadDocument(1L))
-        advanceUntilIdle()
-        viewModel.processIntent(DetailIntent.OnAuthenticated)
-        advanceUntilIdle()
-
         viewModel.effect.test {
+            viewModel.processIntent(DetailIntent.LoadDocument(1L))
+            advanceUntilIdle()
+
+            // Consume biometric auth request from loadDocument
+            assertEquals(DetailEffect.RequestBiometricAuth, awaitItem())
+
+            viewModel.processIntent(DetailIntent.OnAuthenticated)
+            advanceUntilIdle()
+
             viewModel.processIntent(DetailIntent.ConfirmDelete)
             advanceUntilIdle()
 

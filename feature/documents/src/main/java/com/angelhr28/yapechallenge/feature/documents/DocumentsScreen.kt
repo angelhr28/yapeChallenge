@@ -2,7 +2,7 @@ package com.angelhr28.yapechallenge.feature.documents
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -79,7 +79,7 @@ fun DocumentsScreen(
     var showAddMenu by remember { mutableStateOf(false) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = OpenDocument()
     ) { uri: Uri? ->
         uri?.let {
             val contentResolver = context.contentResolver
@@ -131,7 +131,9 @@ fun DocumentsScreen(
                         text = { Text("Desde galería") },
                         onClick = {
                             showAddMenu = false
-                            galleryLauncher.launch("*/*")
+                            galleryLauncher.launch(
+                                arrayOf("image/*", "application/pdf")
+                            )
                         },
                         leadingIcon = {
                             Icon(Icons.Default.PhotoLibrary, contentDescription = null)
